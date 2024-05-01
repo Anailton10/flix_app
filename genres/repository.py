@@ -1,8 +1,6 @@
 import requests
 import streamlit as st
 
-from login.service import logout
-
 
 def verify_status(response, code: int):
     """Verifica o status de uma resposta HTTP e
@@ -18,8 +16,9 @@ def verify_status(response, code: int):
 
     Returns:
         dict:  O status code for igual o esperado retorna no formato Json.
-        None : O status for 401 a função logout é chama e retorna None.
+        None : Se o status for 401 a função logout é chama e retorna None.
     """
+    from login.service import logout
     if response.status_code == code:
         return response.json()
 
