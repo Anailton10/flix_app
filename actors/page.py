@@ -1,33 +1,52 @@
+from datetime import datetime
+
 import pandas as pd
 import streamlit as st
 from st_aggrid import AgGrid
 
-actors = [
-    {
-        'id': 1,
-        'name': 'Robert Downey Jr.'
-    },
-    {
-        'id': 2,
-        'name': 'Scarlett Johansson'
-    },
-    {
-        'id': 3,
-        'name': 'Tom Hanks'
-    }
-]
+from actors.service import ActorService
 
 
 def show_actors():
-    st.write('Lista de Gêneros')
+    actor_service = ActorService()
+    actors = actor_service.get_actors()
 
-    df = pd.DataFrame(actors)
-    AgGrid(data=df,
-           reload_data=True,
-           key='actors_grid',
-           )
+    if actors:
+        st.write('Lista de Gêneros')
+
+        actor_df = pd.json_normalize(actors)
+        AgGrid(data=actor_df,
+               reload_data=True,
+               key='actors_grid',
+               )
+    else:
+        st.warning('Nenhum ator/atriz encontrado(a)')
 
     st.title('Cadastrar Novo Ator/Atriz')
+
     name = st.text_input('Nome do Ator')
+
+    birthday = st.date_input(
+        label='Data de Nascimento',
+        value=datetime.today(),
+        min_value=datetime(1600, 1, 1).date(),
+        max_value=datetime.today(),
+        format='DD/MM/YYYY',
+    )
+    nationality_dropdown = ['BRAZIL', 'USA']
+
+    nationality = st.selectbox(
+        label='Nacionalidade',
+        options=nationality_dropdown,
+    )
+
     if st.button('Cadastrar'):
-        st.success(f'Ator/Atriz "{name}" cadastrado(a) com sucesso!')
+        new_actor = actor_service.create_actor(
+            name=name,
+            birthday=birthday,
+            nationality=nationality
+        )
+        if new_actor:
+            st.rerun()
+        else:
+            st.error('Error ao cadastrar, verifique os campos!!')
