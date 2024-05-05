@@ -1,0 +1,3 @@
+[flake8]
+exlude = venv
+ignore = E501
