@@ -41,7 +41,7 @@ def show_reviews():
             stars=stars,
             comment=comment,
         )
-        
+
         if new_review:
             st.rerun()
         else:

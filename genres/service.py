@@ -11,7 +11,7 @@ class GenreService:
     def get_genres(self):
         if 'genres' in st.session_state:
             return st.session_state.genres
-        
+
         genres = self.genre_repository.get_genres()
         st.session_state.genres = genres
         return genres
