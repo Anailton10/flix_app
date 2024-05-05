@@ -57,3 +57,12 @@ class MovieRepository:
 
         json_data = verify_status(response=response, code=201)
         return json_data
+
+    def get_movie_stats(self):
+        response = requests.get(
+            f'{self.__movies_url}stats/',
+            headers=self.__headers
+        )
+
+        json_data = verify_status(response=response, code=200)
+        return json_data
